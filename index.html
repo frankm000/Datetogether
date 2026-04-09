@@ -239,7 +239,7 @@
         Beantworten Sie die Fragen einfach ehrlich… ich kümmere mich um den Rest 😏
       </p>
     </div>
-    <audio id="bgMusic" autoplay loop playsinline>
+    <audio id="bgMusic" loop playsinline>
       <source src="song.mp3" type="audio/mpeg">
     </audio>
 
@@ -661,6 +661,22 @@
       showStep(currentStep);
       window.scrollTo({ top: 0, behavior: "smooth" });
     });
+
+
+    const bgMusic = document.getElementById("bgMusic");
+
+    async function startMusic() {
+      try {
+        await bgMusic.play();
+        document.removeEventListener("click", startMusic);
+        document.removeEventListener("touchstart", startMusic);
+      } catch (e) {
+        console.log("Musik konnte noch nicht gestartet werden:", e);
+      }
+    }
+
+    document.addEventListener("click", startMusic);
+    document.addEventListener("touchstart", startMusic);
 
     showStep(currentStep);
   </script>
