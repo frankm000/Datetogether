@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unser Samstag – nur wir zwei ❤️</title>
+  <style>
+    :root {
+      --bg1: #1f1020;
+      --bg2: #3c1734;
+      --card: rgba(255,255,255,0.12);
+      --card-border: rgba(255,255,255,0.18);
+      --text: #fff7fb;
+      --muted: #f8dbe7;
+      --accent: #ff6fa9;
+      --accent-2: #ff94bf;
+      --accent-3: #ffd3e3;
+      --shadow: 0 20px 60px rgba(0,0,0,0.28);
+      --success: #8fffbe;
+    }
+
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: Inter, Arial, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(255,124,174,0.25), transparent 30%),
+        radial-gradient(circle at top right, rgba(255,180,214,0.22), transparent 25%),
+        linear-gradient(135deg, var(--bg1), var(--bg2));
+      color: var(--text);
+      min-height: 100%;
+    }
+    body { padding: 20px; }
+    .app { max-width: 760px; margin: 0 auto; }
+    .hero { text-align: center; margin-bottom: 18px; padding-top: 10px; }
+    .hero h1 { margin: 0 0 12px; font-size: clamp(28px, 5vw, 44px); line-height: 1.1; }
+    .hero p { margin: 0 auto; max-width: 650px; color: var(--muted); font-size: 16px; line-height: 1.6; }
+
+    .progress-wrap {
+      margin: 22px 0 18px;
+      padding: 14px 16px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.10);
+      box-shadow: var(--shadow);
+    }
+    .progress-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+    .progress-bar {
+      width: 100%;
+      height: 10px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: rgba(255,255,255,0.10);
+    }
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      transition: width 0.35s ease;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(14px);
+      border-radius: 26px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .step { display: none; animation: fadeIn 0.25s ease; }
+    .step.active { display: block; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .question-title {
+      font-size: clamp(22px, 4vw, 30px);
+      margin: 0 0 10px;
+      line-height: 1.25;
+    }
+    .question-sub {
+      margin: 0 0 22px;
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 15px;
+    }
+
+    .options { display: grid; gap: 12px; }
+    .option { position: relative; }
+    .option input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .option label {
+      display: block;
+      padding: 16px 18px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      cursor: pointer;
+      transition: 0.22s ease;
+      line-height: 1.5;
+      user-select: none;
+    }
+    .option label:hover {
+      transform: translateY(-1px);
+      background: rgba(255,255,255,0.12);
+      border-color: rgba(255,255,255,0.22);
+    }
+    .option input:checked + label {
+      background: linear-gradient(135deg, rgba(255,111,169,0.25), rgba(255,148,191,0.20));
+      border-color: rgba(255,180,214,0.65);
+      box-shadow: 0 0 0 1px rgba(255,211,227,0.25) inset;
+    }
+
+    textarea, input[type="text"] {
+      width: 100%;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.08);
+      color: white;
+      border-radius: 16px;
+      padding: 15px 16px;
+      font: inherit;
+      outline: none;
+      transition: border-color 0.2s ease, background 0.2s ease;
+    }
+    textarea:focus, input[type="text"]:focus {
+      border-color: rgba(255,180,214,0.65);
+      background: rgba(255,255,255,0.11);
+    }
+    textarea {
+      min-height: 140px;
+      resize: vertical;
+      line-height: 1.5;
+    }
+
+    .scale-wrap {
+      background: rgba(255,255,255,0.08);
+      padding: 16px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+    .scale-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    .scale-value {
+      margin-top: 14px;
+      text-align: center;
+      font-size: 30px;
+      font-weight: 700;
+      color: var(--accent-3);
+    }
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent);
+    }
+
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 24px;
+    }
+    button {
+      border: none;
+      border-radius: 16px;
+      padding: 14px 18px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.18s ease, opacity 0.18s ease;
+    }
+    button:hover { transform: translateY(-1px); }
+    button.secondary {
+      background: rgba(255,255,255,0.10);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.12);
+      min-width: 130px;
+    }
+    button.primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: white;
+      min-width: 160px;
+      box-shadow: 0 10px 30px rgba(255,111,169,0.25);
+    }
+
+    .summary-box {
+      margin-top: 20px;
+      padding: 18px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.09);
+      border: 1px solid rgba(255,255,255,0.14);
+      line-height: 1.7;
+      white-space: pre-line;
+    }
+    .success { margin-top: 16px; color: var(--success); font-weight: 700; }
+    .hidden { display: none !important; }
+    .footer-note {
+      text-align: center;
+      margin-top: 16px;
+      color: rgba(255,255,255,0.68);
+      font-size: 13px;
+    }
+
+    @media (max-width: 640px) {
+      body { padding: 14px; }
+      .card { padding: 18px; border-radius: 22px; }
+      .nav { flex-direction: column; }
+      button.secondary, button.primary { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="hero">
+      <h1>💌 Unser Samstag – nur wir zwei ❤️</h1>
+      <p>
+        Jessica Angelina Eva Kop, ich möchte den Samstag genau so gestalten, wie er Sie glücklich macht.
+        Beantworten Sie die Fragen einfach ehrlich… ich kümmere mich um den Rest 😏
+      </p>
+    </div>
+    <audio id="bgMusic" autoplay loop playsinline>
+      <source src="song.mp3" type="audio/mpeg">
+    </audio>
+
+
+    <div class="progress-wrap">
+      <div class="progress-top">
+        <span id="stepCounter">Schritt 1 von 16</span>
+        <span id="progressPercent">6%</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+    </div>
+
+    <form id="dateForm" class="card">
+      <section class="step active">
+        <h2 class="question-title">🌅 1. Wie möchten Sie in den Samstag starten?</h2>
+        <p class="question-sub">Wählen Sie einfach das aus, was sich für Sie am schönsten anfühlt.</p>
+        <div class="options">
+          <div class="option"><input type="radio" id="q1a" name="start" value="Neben dir aufwachen & dich erstmal festhalten ❤️"><label for="q1a">Neben dir aufwachen & dich erstmal festhalten ❤️</label></div>
+          <div class="option"><input type="radio" id="q1b" name="start" value="Kuscheln und einfach liegen bleiben"><label for="q1b">Kuscheln und einfach liegen bleiben</label></div>
+          <div class="option"><input type="radio" id="q1c" name="start" value="Frühstück im Bett 😌"><label for="q1c">Frühstück im Bett 😌</label></div>
+          <div class="option"><input type="radio" id="q1d" name="start" value="Gemeinsam gemütlich frühstücken"><label for="q1d">Gemeinsam gemütlich frühstücken</label></div>
+          <div class="option"><input type="radio" id="q1e" name="start" value="Ich kümmere mich um Percy & Co, du bleibst liegen und entspannst"><label for="q1e">Ich kümmere mich um Percy & Co, du bleibst liegen und entspannst</label></div>
+          <div class="option"><input type="radio" id="q1f" name="start" value="Head"><label for="q1f">Head</label></div>
+          <div class="option"><input type="radio" id="q1g" name="start" value="Lassen Sie sich überraschen 😏"><label for="q1g">Lassen Sie sich überraschen 😏</label></div>
+        </div>
+      </section>
+
+      <section class="step">
+        <h2 class="question-title">☀️ 2. Wo würden Sie am liebsten Zeit mit mir verbringen?</h2>
+        <p class="question-sub">Mehrfachauswahl ist möglich.</p>
+        <div class="options">
+          <div class="option"><input type="checkbox" id="q2a" name="orte" value="Kahlenberg – Aussicht genießen & abschalten"><label for="q2a">Kahlenberg – Aussicht genießen & abschalten</label></div>
+          <div class="option"><input type="checkbox" id="q2b" name="orte" value="Neusiedlersee – Wasser & vielleicht Sonnenuntergang 🌅"><label for="q2b">Neusiedlersee – Wasser & vielleicht Sonnenuntergang 🌅</label></div>
+          <div class="option"><input type="checkbox" id="q2c" name="orte" value="Setagayapark – ruhig & romantisch"><label for="q2c">Setagayapark – ruhig & romantisch</label></div>
+          <div class="option"><input type="checkbox" id="q2d" name="orte" value="Mariahilferstraße – bisschen bummeln & treiben lassen"><label for="q2d">Mariahilferstraße – bisschen bummeln & treiben lassen</label></div>
+          <div class="option"><input type="checkbox" id="q2e" name="orte" value="Café-Date irgendwo in Wien ☕"><label for="q2e">Café-Date irgendwo in Wien ☕</label></div>
+          <div class="option"><input type="checkbox" id="q2f" name="orte" value="Einfach durch Wien laufen und schauen, wo wir landen"><label for="q2f">Einfach durch Wien laufen und schauen, wo wir landen</label></div>
+          <div class="option"><input type="checkbox" id="q2g" name="orte" value="Lieber zuhause bleiben"><label for="q2g">Lieber zuhause bleiben</label></div>
+          <div class="option"><input type="checkbox" id="q2h" name="orte" value="Im Kino - Filmchen und gut ists"><label for="q2h">Im Kino - Filmchen und gut ists</label></div>
+          <div class="option"><input type="checkbox" id="q2i" name="orte" value="Viiieeeelll Blumen sehen"><label for="q2i">Viiieeeelll Blumen sehen</label></div>
+        </div>
+      </section>
+
+      <section class="step">
+        <h2 class="question-title">🎨 2.1. Wenn freie Zeit vorhanden bleibt, welches kreative Projekt möchten Sie starten?</h2>
+        <p class="question-sub">Mehrfachauswahl ist möglich.</p>
+        <div class="options">
+          <div class="option"><input type="checkbox" id="q21a" name="kreativ" value="Blumen basteln"><label for="q21a">Blumen basteln</label></div>
+          <div class="option"><input type="checkbox" id="q21b" name="kreativ" value="Kerzen selbst herstellen"><label for="q21b">Kerzen selbst herstellen</label></div>
+          <div class="option"><input type="checkbox" id="q21c" name="kreativ" value="Kleine Tierchen aus Knete formen"><label for="q21c">Kleine Tierchen aus Knete formen</label></div>
+          <div class="option"><input type="checkbox" id="q21d" name="kreativ" value="Mit Ton Skulpturen erschaffen"><label for="q21d">Mit Ton Skulpturen erschaffen</label></div>
+          <div class="option"><input type="checkbox" id="q21e" name="kreativ" value="Yoga Stunde together"><label for="q21e">Yoga Stunde together</label></div>
+        </div>
+      </section>
+
+      <section class="step">
+        <h2 class="question-title">🍳 3. Wie stellen Sie sich unser Frühstück vor?</h2>
+        <p class="question-sub">Womit startet Ihr perfekter Samstag am liebsten?</p>
+        <div class="options">
+          <div class="option"><input type="radio" id="q3a" name="fruehstueck" value="Frühstück im Bett 😌"><label for="q3a">Frühstück im Bett 😌</label></div>
+          <div class="option"><input type="radio" id="q3b" name="fruehstueck" value="Gemeinsam zuhause frühstücken"><label for="q3b">Gemeinsam zuhause frühstücken</label></div>
+          <div class="option"><input type="radio" id="q3c" name="fruehstueck" value="Frühstücken gehen (Oberlaa?) ☕"><label for="q3c">Frühstücken gehen (Oberlaa?) ☕</label></div>
+          <div class="option"><input type="radio" id="q3d" name="fruehstueck" value="Lieber klein & unkompliziert"><label for="q3d">Lieber klein & unkompliziert</label></div>
+          <div class="option"><input type="radio" id="q3e" name="fruehstueck" value="Lass dich überraschen ❤️"><label for="q3e">Lass dich überraschen ❤️</label></div>
+        </div>
+      </section>
+
+      <section class="step">
+        <h2 class="question-title">🍽️ 4. Worauf haben Sie zu Mittag Lust?</h2>
+        <p class="question-sub">Ganz entspannt nach Gefühl.</p>
+        <div class="options">
+          <div class="option"><input type="radio" id="q4a" name="mittag" value="Zuhause etwas kochen 👩‍🍳"><label for="q4a">Zuhause etwas kochen 👩‍🍳</label></div>
+          <div class="option"><input type="radio" id="q4b" name="mittag" value="Etwas bestellen & chillen 🍕"><label for="q4b">Etwas bestellen & chillen 🍕</label></div>
+          <div class="option"><input type="radio" id="q4c" name="mittag" value="Essen gehen 🍝"><label for="q4c">Essen gehen 🍝</label></div>
+          <div class="option"><input type="radio" id="q4d" name="mittag" value="Nur Snacks / etwas Leichtes"><label for="q4d">Nur Snacks / etwas Leichtes</label></div>
+          <div class="option"><input type="radio" id="q4e" name="mittag" value="Entscheiden wir spontan :)"><label for="q4e">Entscheiden wir spontan :)</label></div>
+        </div>
+      </section>
+
+      <section class="step">
+        <h2 class="question-title">🌙 5. Und worauf haben Sie am Abend Lust?</h2>
+        <p class="question-sub">Der Abend darf ruhig besonders werden.</p>
+        <div class="options">
+          <div class="option"><input type="radio" id="q5a" name="abend" value="Gemütlich zuhause essen 🏠"><label for="q5a">Gemütlich zuhause essen 🏠</label></div>
+          <div class="option"><input type="radio" id="q5b" name="abend" value="Schön essen gehen 🍷"><label for="q5b">Schön essen gehen 🍷</label></div>
+          <div class="option"><input type="radio" id="q5c" name="abend" value="Etwas bestellen & Filmabend 🎬"><label for="q5c">Etwas bestellen & Filmabend 🎬</label></div>
+          <div class="option"><input type="radio" id="q5d" name="abend" value="Snacks & einfach zusammen sein"><label for="q5d">Snacks & einfach zusammen sein</label></div>
+          <div class="option"><input type="radio" id="q5e" name="abend" value="Lassen Sie sich überraschen 😏"><label for="q5e">Lassen Sie sich überraschen 😏</label></div>
+        </div>
+      </section>
+
+      <section class="step">
+        <h2 class="question-title">🍜 6. Welche Küche spricht Sie am meisten an?</h2>
+        <p class="question-sub">Du kannst mehrere auswählen.</p>
+        <div class="options">
+          <div class="option"><input type="checkbox" id="q6a" name="kueche" value="Italienisch 🍝"><label for="q6a">Italienisch 🍝</label></div>
+          <div class="option"><input type="checkbox" id="q6b" name="kueche" value="Chinesisch 🥡"><label for="q6b">Chinesisch 🥡</label></div>
+          <div class="option"><input type="checkbox" id="q6c" name="kueche" value="Japanisch 🍣"><label for="q6c">Japanisch 🍣</label></div>
+          <div class="option"><input type="checkbox" id="q6d" name="kueche" value="Österreichisch / Hausmannskost 🍖"><label for="q6d">Österreichisch / Hausmannskost 🍖</label></div>
+          <div class="option"><input type="checkbox" id="q6e" name="kueche" value="Koreanisch 🇰🇷"><label for="q6e">Koreanisch 🇰🇷</label></div>
+          <div class="option"><input type="checkbox" id="q6f" name="kueche" value="Fast Food 🍔"><label for="q6f">Fast Food 🍔</label></div>
+          <div class="option"><input type="checkbox" id="q6g" name="kueche" value="Süßes (Dessert-Date 😏)"><label for="q6g">Süßes (Dessert-Date 😏)</label></div>
+          <div class="option"><input type="checkbox" id="q6h" name="kueche" value="Egal – Hauptsache zusammen ❤️"><label for="q6h">Egal – Hauptsache zusammen ❤️</label></div>
+        </div>
+        <div style="margin-top:14px;">
+          <input type="text" id="andereKueche" name="andereKueche" placeholder="Andere: ...">
+        </div>
+      </section>
+
+      <section class="step">
+        <h2 class="question-title">🍓 7. Allgemein – wie sollen wir samstags essen?</h2>
+        <p class="question-sub">Welche Form fühlt sich für Sie am besten an?</p>
+        <div class="options">
+          <div class="option"><input type="radio" id="q7a" name="essenStyle" value="Gemeinsam kochen (mit ein bisschen Ablenkung 😏)"><label for="q7a">Gemeinsam kochen (mit ein bisschen Ablenkung 😏)</label></div>
+          <div class="option"><input type="radio" id="q7b" name="essenStyle" value="Etwas bestellen & gemütlich machen 🍕"><label for="q7b">Etwas bestellen & gemütlich machen 🍕</label></div>
+          <div class="option"><input type="radio" id="q7c" name="essenStyle" value="Schön essen gehen 🍝"><label for="q7c">Schön essen gehen 🍝</label></div>
+          <div class="option"><input type="radio" id="q7d" name="essenStyle" value="Snacks & einfach genießen"><label for="q7d">Snacks & einfach genießen</label></div>
+          <div class="option"><input type="radio" id="q7e" name="essenStyle" value="Egal – Hauptsache mit dir ❤️"><label for="q7e">Egal – Hauptsache mit dir ❤️</label></div>
+        </div>
+      </section>
+
+      <section class="step">
+        <h2 class="question-title">💞 8. Wie viel Nähe wünschen Sie sich samstags? (Bei nachträglichen Änderungen bitte um Information)</h2>
+        <p class="question-sub">1 = eher entspannt · 10 = ich lass dich heute nicht mehr los 😌</p>
+        <div class="scale-wrap">
+          <div class="scale-top">
+            <span>1 = eher entspannt</span>
+            <span>10 = ganz viel Nähe</span>
+          </div>
+          <input type="range" id="naehe" name="naehe" min="1" max="10" value="7">
+          <div class="scale-value" id="naeheValue">7</div>
+        </div>
+      </section>
+
+      <section class="step">
+        <h2 class="question-title">🔥 9. Welche Art von Zweisamkeit gedenken Sie samstags zu fühlen?</h2>
+        <p class="question-sub">Mehrfachauswahl ist möglich.</p>
+        <div class="options">
+          <div class="option"><input type="checkbox" id="q9a" name="zweisamkeit" value="Viel kuscheln & gehalten werden"><label for="q9a">Viel kuscheln & gehalten werden</label></div>
+          <div class="option"><input type="checkbox" id="q9b" name="zweisamkeit" value="Zärtliche, liebevolle Momente"><label for="q9b">Zärtliche, liebevolle Momente</label></div>
+          <div class="option"><input type="checkbox" id="q9c" name="zweisamkeit" value="Ein bisschen frech & verspielt 😏"><label for="q9c">Ein bisschen frech & verspielt 😏</label></div>
+          <div class="option"><input type="checkbox" id="q9d" name="zweisamkeit" value="Leidenschaft & Nähe spüren"><label for="q9d">Leidenschaft & Nähe spüren</label></div>
+          <div class="option"><input type="checkbox" id="q9e" name="zweisamkeit" value="Einfach schauen, was passiert"><label for="q9e">Einfach schauen, was passiert</label></div>
+        </div>
+      </section>
+
+      <section class="step">
+        <h2 class="question-title">🎮 10. Was wollen wir zusammen machen?</h2>
+        <p class="question-sub">Wählen Sie das aus, was heute am besten passt.</p>
+        <div class="options">
+          <div class="option"><input type="radio" id="q10a" name="aktivitaet" value="Trash TV schauen 📺"><label for="q10a">Trash TV schauen 📺</label></div>
+          <div class="option"><input type="radio" id="q10b" name="aktivitaet" value="Einfach zusammen chillen"><label for="q10b">Einfach zusammen chillen</label></div>
+          <div class="option"><input type="radio" id="q10c" name="aktivitaet" value="Einen rauchen und entspannen 🌿"><label for="q10c">Einen rauchen und entspannen 🌿</label></div>
+          <div class="option"><input type="radio" id="q10d" name="aktivitaet" value="Musik hören & reden"><label for="q10d">Musik hören & reden</label></div>
+          <div class="option"><input type="radio" id="q10e" name="aktivitaet" value="Spaziergang / Sonnenuntergang 🌅"><label for="q10e">Spaziergang / Sonnenuntergang 🌅</label></div>
+          <div class="option"><input type="radio" id="q10f" name="aktivitaet" value="Abendspaziergang durch Wien"><label for="q10f">Abendspaziergang durch Wien</label></div>
+          <div class="option"><input type="radio" id="q10g" name="aktivitaet" value="Dich überraschen lassen 💫"><label for="q10g">Dich überraschen lassen 💫</label></div>
+        </div>
+      </section>
+
+      <section class="step">
+        <h2 class="question-title">💖 11. Welche Stimmung soll unser Tag haben?</h2>
+        <p class="question-sub">Was passt am meisten zu uns?</p>
+        <div class="options">
+          <div class="option"><input type="radio" id="q11a" name="stimmung" value="Romantisch & voller Nähe ❤️"><label for="q11a">Romantisch & voller Nähe ❤️</label></div>
+          <div class="option"><input type="radio" id="q11b" name="stimmung" value="Entspannt & ruhig 😌"><label for="q11b">Entspannt & ruhig 😌</label></div>
+          <div class="option"><input type="radio" id="q11c" name="stimmung" value="Verspielt & ein bisschen frech 😏"><label for="q11c">Verspielt & ein bisschen frech 😏</label></div>
+          <div class="option"><input type="radio" id="q11d" name="stimmung" value="Tief & emotional verbunden"><label for="q11d">Tief & emotional verbunden</label></div>
+          <div class="option"><input type="radio" id="q11e" name="stimmung" value="Mischung aus allem 😈"><label for="q11e">Mischung aus allem 😈</label></div>
+        </div>
+      </section>
+
+      <section class="step">
+        <h2 class="question-title">💭 12. Was wünschen Sie sich heute ganz besonders von mir?</h2>
+        <p class="question-sub">Beschreiben Sie mir einfach, was Sie glücklich macht 💌</p>
+        <textarea id="wunsch" name="wunsch" placeholder="Schreiben Sie hier frei drauf los..."></textarea>
+      </section>
+
+      <section class="step">
+        <h2 class="question-title">13. Wie oft, über den Tag verteilt, möchten Sie Head bekommen?</h2>
+        <p class="question-sub">0 bis 7</p>
+        <div class="scale-wrap">
+          <div class="scale-top">
+            <span>0</span>
+            <span>7</span>
+          </div>
+          <input type="range" id="headAnzahl" name="headAnzahl" min="0" max="7" value="0">
+          <div class="scale-value" id="headValue">0</div>
+        </div>
+      </section>
+
+      <section class="step">
+        <h2 class="question-title">13.1. Besser fragen als nie zu fragen :) Sexuelle Extrawünsche?</h2>
+        <p class="question-sub">Freie Antwort.</p>
+        <textarea id="extraWuensche" name="extraWuensche" placeholder="Wenn Sie möchten, schreiben Sie es hier hinein..."></textarea>
+      </section>
+
+      <section class="step">
+        <h2 class="question-title">✨ 14. Wie sehr darf ich Sie überraschen?</h2>
+        <p class="question-sub">1 = lieber gemeinsam planen · 10 = komplette Überraschung 😏</p>
+        <div class="scale-wrap">
+          <div class="scale-top">
+            <span>1 = lieber gemeinsam planen</span>
+            <span>10 = komplette Überraschung</span>
+          </div>
+          <input type="range" id="ueberraschung" name="ueberraschung" min="1" max="10" value="7">
+          <div class="scale-value" id="ueberraschungValue">7</div>
+        </div>
+      </section>
+
+      <section class="step">
+        <h2 class="question-title">🎯 15. Wer soll den Tag planen?</h2>
+        <p class="question-sub">Fast geschafft ❤️</p>
+        <div class="options">
+          <div class="option"><input type="radio" id="q15a" name="planung" value="Du 😏"><label for="q15a">Du 😏</label></div>
+          <div class="option"><input type="radio" id="q15b" name="planung" value="Ich"><label for="q15b">Ich</label></div>
+          <div class="option"><input type="radio" id="q15c" name="planung" value="Gemeinsam"><label for="q15c">Gemeinsam</label></div>
+        </div>
+      </section>
+
+      <section class="step" id="resultStep">
+        <h2 class="question-title">❤️ Ihr Samstag ist gespeichert</h2>
+        <p class="question-sub">Ich freue mich auf jeden Moment mit Ihnen… ganz gleich, wie der Tag wird ❤️</p>
+        <div class="summary-box" id="summaryText"></div>
+        <div class="success" id="saveStatus">Speichern läuft…</div>
+      </section>
+
+      <div class="nav" id="navButtons">
+        <button type="button" class="secondary" id="prevBtn">Zurück</button>
+        <button type="button" class="primary" id="nextBtn">Weiter</button>
+      </div>
+    </form>
+
+    <div class="footer-note">
+      Ihre Antworten werden an Frank gesendet und bestmöglich umgesetzt.
+    </div>
+  </div>
+
+    
+
+  <script>
+    const WEB_APP_URL = "HIER_DEINE_GOOGLE_APPS_SCRIPT_WEBAPP_URL_EINFUEGEN";
+
+    const steps = Array.from(document.querySelectorAll(".step"));
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const progressFill = document.getElementById("progressFill");
+    const progressPercent = document.getElementById("progressPercent");
+    const stepCounter = document.getElementById("stepCounter");
+    const summaryText = document.getElementById("summaryText");
+    const saveStatus = document.getElementById("saveStatus");
+    const navButtons = document.getElementById("navButtons");
+
+    const naehe = document.getElementById("naehe");
+    const naeheValue = document.getElementById("naeheValue");
+    const headAnzahl = document.getElementById("headAnzahl");
+    const headValue = document.getElementById("headValue");
+    const ueberraschung = document.getElementById("ueberraschung");
+    const ueberraschungValue = document.getElementById("ueberraschungValue");
+
+    naehe.addEventListener("input", () => naeheValue.textContent = naehe.value);
+    headAnzahl.addEventListener("input", () => headValue.textContent = headAnzahl.value);
+    ueberraschung.addEventListener("input", () => ueberraschungValue.textContent = ueberraschung.value);
+
+    let currentStep = 0;
+    const totalQuestionSteps = 16;
+
+    function showStep(index) {
+      steps.forEach((step, i) => step.classList.toggle("active", i === index));
+      const isResult = index === steps.length - 1;
+      prevBtn.classList.toggle("hidden", index === 0 || isResult);
+      nextBtn.textContent = index === totalQuestionSteps - 1 ? "Absenden ❤️" : "Weiter";
+
+      if (isResult) {
+        navButtons.classList.add("hidden");
+        stepCounter.textContent = "Fertig ❤️";
+        progressFill.style.width = "100%";
+        progressPercent.textContent = "100%";
+      } else {
+        navButtons.classList.remove("hidden");
+        const percent = Math.round(((index + 1) / totalQuestionSteps) * 100);
+        stepCounter.textContent = `Schritt ${index + 1} von ${totalQuestionSteps}`;
+        progressFill.style.width = percent + "%";
+        progressPercent.textContent = percent + "%";
+      }
+    }
+
+    function getRadioValue(name) {
+      return document.querySelector(`input[name="${name}"]:checked`)?.value || "";
+    }
+
+    function getCheckboxValues(name) {
+      return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`)).map(el => el.value);
+    }
+
+    function validateStep(index) {
+      const step = steps[index];
+      const radios = step.querySelectorAll('input[type="radio"]');
+      const textarea = step.querySelector("textarea");
+
+      if (radios.length > 0) {
+        const groupName = radios[0].name;
+        if (!getRadioValue(groupName)) {
+          alert("Bitte wählen Sie eine Antwort aus ❤️");
+          return false;
+        }
+      }
+
+      if (textarea && textarea.id === "wunsch" && !textarea.value.trim()) {
+        alert("Bitte schreiben Sie ein paar Worte hinein ❤️");
+        return false;
+      }
+
+      return true;
+    }
+
+    function collectData() {
+      return {
+        zeitstempel: new Date().toISOString(),
+        titel: "Unser Samstag – nur wir zwei ❤️",
+        start: getRadioValue("start"),
+        orte: getCheckboxValues("orte"),
+        kreativ: getCheckboxValues("kreativ"),
+        fruehstueck: getRadioValue("fruehstueck"),
+        mittag: getRadioValue("mittag"),
+        abend: getRadioValue("abend"),
+        kueche: getCheckboxValues("kueche"),
+        andereKueche: document.getElementById("andereKueche").value.trim(),
+        essenStyle: getRadioValue("essenStyle"),
+        naehe: naehe.value,
+        zweisamkeit: getCheckboxValues("zweisamkeit"),
+        aktivitaet: getRadioValue("aktivitaet"),
+        stimmung: getRadioValue("stimmung"),
+        wunsch: document.getElementById("wunsch").value.trim(),
+        headAnzahl: headAnzahl.value,
+        extraWuensche: document.getElementById("extraWuensche").value.trim(),
+        ueberraschung: ueberraschung.value,
+        planung: getRadioValue("planung")
+      };
+    }
+
+    function generateSummary(data) {
+      const parts = [];
+      if (data.start) parts.push(`🌅 Start: ${data.start}`);
+      if (data.orte.length) parts.push(`☀️ Ort(e): ${data.orte.join(", ")}`);
+      if (data.kreativ.length) parts.push(`🎨 Kreatives Projekt: ${data.kreativ.join(", ")}`);
+      if (data.fruehstueck) parts.push(`🍳 Frühstück: ${data.fruehstueck}`);
+      if (data.mittag) parts.push(`🍽️ Mittag: ${data.mittag}`);
+      if (data.abend) parts.push(`🌙 Abend: ${data.abend}`);
+
+      const kuechen = [...data.kueche];
+      if (data.andereKueche) kuechen.push(`Andere: ${data.andereKueche}`);
+      if (kuechen.length) parts.push(`🍜 Küche: ${kuechen.join(", ")}`);
+
+      if (data.essenStyle) parts.push(`🍓 Essen allgemein: ${data.essenStyle}`);
+      if (data.naehe) parts.push(`💞 Nähe: ${data.naehe}/10`);
+      if (data.zweisamkeit.length) parts.push(`🔥 Zweisamkeit: ${data.zweisamkeit.join(", ")}`);
+      if (data.aktivitaet) parts.push(`🎮 Aktivität: ${data.aktivitaet}`);
+      if (data.stimmung) parts.push(`💖 Stimmung: ${data.stimmung}`);
+      if (data.wunsch) parts.push(`💭 Wunsch: ${data.wunsch}`);
+      parts.push(`13. Head bekommen: ${data.headAnzahl}`);
+      if (data.extraWuensche) parts.push(`13.1 Sexuelle Extrawünsche: ${data.extraWuensche}`);
+      if (data.ueberraschung) parts.push(`✨ Überraschung: ${data.ueberraschung}/10`);
+      if (data.planung) parts.push(`🎯 Planung: ${data.planung}`);
+      return parts.join("\n\n");
+    }
+
+    async function saveData(data) {
+      localStorage.setItem("unserSamstagAntworten", JSON.stringify(data));
+
+      if (!WEB_APP_URL || WEB_APP_URL.includes("HIER_DEINE")) {
+        saveStatus.textContent = "Lokal gespeichert ❤️ Google-Sheets-URL ist noch nicht eingetragen.";
+        return;
+      }
+
+      try {
+        const response = await fetch(WEB_APP_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+          saveStatus.textContent = "Erfolgreich gespeichert ❤️";
+        } else {
+          saveStatus.textContent = "Lokal gespeichert ❤️ Senden an Google Sheets hat nicht funktioniert.";
+        }
+      } catch (error) {
+        saveStatus.textContent = "Lokal gespeichert ❤️ Google Sheets konnte gerade nicht erreicht werden.";
+      }
+    }
+
+    prevBtn.addEventListener("click", () => {
+      if (currentStep > 0) {
+        currentStep--;
+        showStep(currentStep);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    });
+
+    nextBtn.addEventListener("click", async () => {
+      if (currentStep < totalQuestionSteps && !validateStep(currentStep)) return;
+
+      if (currentStep === totalQuestionSteps - 1) {
+        const data = collectData();
+        const summary = generateSummary(data);
+        data.generierterPlan = summary;
+        summaryText.textContent = summary;
+        currentStep++;
+        showStep(currentStep);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        await saveData(data);
+        return;
+      }
+
+      currentStep++;
+      showStep(currentStep);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+    showStep(currentStep);
+  </script>
+</body>
+</html>
